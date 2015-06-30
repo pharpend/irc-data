@@ -18,7 +18,7 @@
 --               messages.
 -- Copyright   : Copyright 2015 Peter Harpending
 -- License     : Apache-2.0
--- Maintainer  : Peter Harpending <peter@harpending.org>
+-- Maintainer  : peter@harpending.org
 -- Stability   : experimental
 -- Portability : portable
 -- 
