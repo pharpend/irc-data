@@ -24,5 +24,11 @@
 -- 
 -- This is an umbrella module, meaning you do not need to import any
 -- submodules of @Data.IRC@.
+-- 
+-- This module contains tools to parse, abstract, and format IRC
+-- messages compliant with <https://tools.ietf.org/html/rfc2812 RFC
+-- 2812> and .
 
 module Data.IRC where
+
+-- |The type for user 

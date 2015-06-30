@@ -1,17 +1,21 @@
-name:                rfc2812
+name:                irc-data
 version:             0.1.0.0
-synopsis:            Haskell library for RFC 2812 IRC messages.
+synopsis:            Haskell library for parsing and formatting IRC data.
 description:
-  This is a Haskell library for parsing, abstracting, and formatting messages to
-  & from <https://tools.ietf.org/html/rfc2812 RFC 2812> compliant IRC servers.
+  This is a Haskell library for parsing, abstracting, and formatting raw IRC
+  messages, as specified in <https://tools.ietf.org/html/rfc1459 RFC 1459> and
+  <https://tools.ietf.org/html/rfc2812 RFC 2812>.
+  .
+  This library does not actually talk to the IRC server. It just parses messages
+  from it.
   .
   Usage:
   .
   > import Data.IRC
   .
   See the documentation for @Data.IRC@ for more details.
-homepage:            https://github.com/pharpend/rfc2812
-bug-reports:         https://github.com/pharpend/rfc2812/issues
+homepage:            https://github.com/pharpend/irc-data
+bug-reports:         https://github.com/pharpend/irc-data/issues
 license:             Apache-2.0
 license-file:        LICENSE
 author:              Peter Harpending

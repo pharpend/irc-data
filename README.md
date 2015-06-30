@@ -1,10 +1,10 @@
-# rfc2812
+# irc-data
 
-This is a Haskell library for parsing IRC messages, as per
-[RFC 2812][1].
+This is a Haskell library for parsing, abstracting, and formatting raw
+IRC messages.
 
 Documentation on how to install and use the library will come when the
-library is finished.
+library is somewhat usable.
 
 The library is licensed under the permissive [Apache License][2].
 
