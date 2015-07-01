@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE Trustworthy #-}
 
 -- Copyright 2015 Peter Harpending
 -- 
