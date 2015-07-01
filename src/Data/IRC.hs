@@ -129,7 +129,7 @@ data UserCommand
     -- hostname to the destintation hostname.
     Encap HostName
           HostName
-          IRCCommand
+          UserCommand
   |
     -- |Used by servers to communicate errors to other servers. It is
     -- also used before terminating a client.
