@@ -63,6 +63,8 @@ test-suite tests
   ghc-options:        -Wall -threaded
   build-depends:
       base >=4.7 && <4.9
+    , bytestring
     , hspec
+    , hspec-expectations
     , irc-data
     , QuickCheck
