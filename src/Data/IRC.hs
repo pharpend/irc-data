@@ -190,6 +190,8 @@ data UserCommand
     -- the statistics to that server mask. If a hostname is given,
     -- forward the message to the target.
     Lusers (Maybe (ServerMask, Maybe HostName))
+  | -- |Set a channel mode. The 'ByteString' is for 'flags'.
+    ModeChannel ChannelName (Vector Char) ByteString
   |
     -- |Send a message to either a channel or a nick with a message.
     PrivMsg (Either ChannelName Nick)
