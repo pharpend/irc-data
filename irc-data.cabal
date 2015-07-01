@@ -43,7 +43,11 @@ library
   -- other-modules:
   -- other-extensions:
   build-depends:
-      base >=4.7 && <4.9
+      attoparsec
+    , base >=4.7 && <4.9
+    , bytestring
+    , unordered-containers
+    , vector
   exposed-modules:
     Data.IRC
 
