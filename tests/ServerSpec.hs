@@ -28,9 +28,11 @@ import           TestTypes ()
 
 import           Control.Applicative
 import           Data.ByteString (ByteString)
-import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as C
 import           Data.Monoid
+import           Data.Text (Text)
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as T
 import           Test.Hspec
 import           Test.Hspec.Expectations.Contrib
 import           Test.QuickCheck
@@ -69,38 +71,39 @@ spec = parallel $ do
         ]
       specify "Randomly generated invalid hostnames should be invalid" $
         property $
-          \(InvalidHostName x) -> shouldNotBe (fmap unHostName (parseHostName x)) (Right x)
+          \(InvalidHostName x) -> 
+            shouldNotBe (fmap unHostName (parseHostName (T.encodeUtf8 x))) 
+                        (Right x)
 
 testValidHnom :: ByteString -> Spec
 testValidHnom s =
   specify (mappend (C.unpack s) " should be a valid hostname") $ do
-    shouldBe (fmap unHostName (parseHostName s)) (Right s)
+    shouldBe (fmap unHostName (parseHostName s)) (Right (T.decodeUtf8 s))
 
 testInvalidHnom :: ByteString -> Spec
 testInvalidHnom s =
   specify (mappend (C.unpack s) " should not be a valid hostname") $
-    shouldNotBe (fmap unHostName (parseHostName s)) (Right s)
+    shouldNotBe (fmap unHostName (parseHostName s)) (Right (T.decodeUtf8 s))
 
-newtype InvalidHostName = InvalidHostName ByteString
+newtype InvalidHostName = InvalidHostName Text
   deriving (Show, Eq)
 
-newtype HostNamePart = HostNamePart { unHp :: ByteString}
+newtype HostNamePart = HostNamePart { unHp :: Text }
   deriving (Show, Eq)
 
 instance Arbitrary InvalidHostName where
-  arbitrary = do
-    hnparts <- suchThat arbitrary (\x -> length x > 0)
-    pure (InvalidHostName (B.intercalate "." (fmap unHp hnparts)))
+  arbitrary = 
+    do hnparts <- suchThat arbitrary (\x -> length x > 0)
+       pure (InvalidHostName (T.intercalate "." (fmap unHp hnparts)))
 
 instance Arbitrary HostNamePart where
   arbitrary =
     fmap HostNamePart $
-      suchThat arbitrary $
-        \bytes ->
-          or
-            [ B.null bytes
-            , C.head bytes == '-'
-            , C.last bytes == '-'
-            , C.any (not .
-                     (`elem` (mconcat [['A' .. 'Z'], ['a' .. 'z'], ['0' .. '9'], "-"]))) bytes
-            ]
+    suchThat arbitrary $
+    \bytes ->
+      or [T.null bytes
+         ,T.head bytes == '-'
+         ,T.last bytes == '-'
+         ,T.any (not .
+                 (`elem` (mconcat [['A' .. 'Z'],['a' .. 'z'],['0' .. '9'],"-"])))
+                bytes]

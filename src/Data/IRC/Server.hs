@@ -36,6 +36,9 @@ import Data.Attoparsec.ByteString.Char8
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Char8 as B
 import Data.Ord (comparing)
+import Data.Text (Text)
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as T
 import Prelude hiding (takeWhile)
 
 #if !(MIN_VERSION_base(4,8,0))
@@ -66,7 +69,7 @@ instance Show Server where
   
 -- |This discards any input after 63 characters.
 mkServer :: HostName -> Server
-mkServer (HostName x) = Server (HostName (B.take 63 x))
+mkServer (HostName x) = Server (HostName (T.take 63 x))
 
 -- |A newtype over 'ByteString'
 -- 
@@ -76,14 +79,14 @@ mkServer (HostName x) = Server (HostName (B.take 63 x))
 -- > shortname  =  ( letter / digit ) *( letter / digit / "-" )
 -- >               *( letter / digit )
 -- >                 ; as specified in RFC 1123
-newtype HostName = HostName {unHostName :: ByteString}
+newtype HostName = HostName {unHostName :: Text}
   deriving Eq
 
 instance Ord HostName where
   compare = comparing unHostName
 
 instance Show HostName where
-  show = B.unpack . unHostName
+  show = T.unpack . unHostName
 
 -- |Parse a 'HostName', returning 'Left' on invalid input, with an error
 -- message.
@@ -92,7 +95,7 @@ parseHostName = parseOnly hostNameParser
 
 -- |A 'Parser' for 'HostName's
 hostNameParser :: Parser HostName
-hostNameParser = fmap HostName hnp <?> "hostname"
+hostNameParser = fmap (HostName . T.decodeUtf8) hnp <?> "hostname"
   where 
     hnp = 
       do initChr <- satisfy alphaNum <?> "first character in shortname"

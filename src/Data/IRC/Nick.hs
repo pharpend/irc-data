@@ -22,15 +22,15 @@
 -- Portability : portable
 
 module Data.IRC.Nick
-  (Nick
-  ,unNick
-  ,parseNick
-  ,nickParser
-  ,isValidInitialNickChar
-  ,validInitialNickChars
-  ,isValidNonInitialNickChar
-  ,validNonInitialNickChars)
-  where
+       ( Nick
+       , unNick
+       , parseNick
+       , nickParser
+       , isValidInitialNickChar
+       , validInitialNickChars
+       , isValidNonInitialNickChar
+       , validNonInitialNickChars
+       ) where
   
 import Data.Attoparsec.ByteString
 import Data.ByteString (ByteString)
@@ -38,6 +38,8 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as C
 import Data.Monoid
 import Data.Ord
+import Data.Text (Text)
+import qualified Data.Text.Encoding as T
 import Data.Word
 import Prelude hiding (takeWhile)
 
@@ -49,7 +51,7 @@ import Prelude hiding (takeWhile)
 -- > letter     =  %x41-5A / %x61-7A       ; A-Z / a-z
 -- > special    =  %x5B-60 / %x7B-7D
 -- >                  ; "[", "]", "\", "`", "_", "^", "{", "|", "}"
-newtype Nick = Nick { unNick :: ByteString }
+newtype Nick = Nick { unNick :: Text }
   deriving Eq
   
 instance Ord Nick where
@@ -62,7 +64,7 @@ parseNick :: ByteString -> Either String Nick
 parseNick = parseOnly nickParser          
 
 nickParser :: Parser Nick
-nickParser = fmap Nick nnp <?> "nick"
+nickParser = fmap (Nick . T.decodeUtf8) nnp <?> "nick"
   where nnp =
           do initWord <- satisfy isValidInitialNickChar
              rest <- takeWhile isValidNonInitialNickChar

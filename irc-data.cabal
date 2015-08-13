@@ -42,8 +42,7 @@ library
       attoparsec
     , base >=4.7 && <4.9
     , bytestring
-    , unordered-containers
-    , vector
+    , text
   default-extensions:
     CPP
     MultiWayIf
@@ -71,6 +70,7 @@ test-suite tests
     , hspec-expectations
     , irc-data
     , QuickCheck
+    , text
   default-extensions:
     CPP
     OverloadedStrings
