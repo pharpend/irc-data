@@ -54,6 +54,7 @@ library
     Data.IRC
     Data.IRC.Nick
     Data.IRC.Server
+    Data.IRC.Service
   hs-source-dirs:     src
   ghc-options:        -Wall -fno-warn-unused-do-bind
   other-extensions:   

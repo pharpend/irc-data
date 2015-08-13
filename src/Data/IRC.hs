@@ -42,9 +42,11 @@
 -- - <https://en.wikipedia.org/wiki/List_of_Internet_Relay_Chat_commands>
 
 module Data.IRC 
-       (module Data.IRC.Nick
-       ,module Data.IRC.Server)
-       where
+       ( module Data.IRC.Nick
+       , module Data.IRC.Server
+       , module Data.IRC.Service
+       ) where
 
 import Data.IRC.Nick
 import Data.IRC.Server
+import Data.IRC.Service
