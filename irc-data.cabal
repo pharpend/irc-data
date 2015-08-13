@@ -54,6 +54,7 @@ library
     , vector
   exposed-modules:
     Data.IRC
+    Data.IRC.Nick
     Data.IRC.Server
   default-extensions:
     CPP
