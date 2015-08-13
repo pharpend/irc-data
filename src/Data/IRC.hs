@@ -118,24 +118,28 @@ parseHostName = parseOnly hostNameParser
 -- |A 'Parser' for 'HostName's
 hostNameParser :: Parser HostName
 hostNameParser = fmap HostName hnp <?> "hostname"
-  where hnp = do initChr <- satisfy alphaNum <?> "first character in shortname"
-                 rest <- takeWhile alphaNumOrDash <?> "rest of chars in shortname"
-                 let singleInit = B.singleton initChr
-                 -- If there aren't any more characters, make sure the last
-                 -- character is alphanumeric.
-                 soFar <- if | B.null rest -> pure singleInit
-                             | alphaNum (B.last rest) -> pure (mappend singleInit rest)
-                             | otherwise -> fail "Last character in shortname must be alphanumeric"
-                 -- Look for a dot.
-                 maybeDot <- peekChar
-                 case maybeDot of
-                   -- If there is a dot, return what we have so far, plus whatever's
-                   -- next
-                   Just '.' -> do char '.'
-                                  after <- hnp
-                                  return (mconcat [soFar,".",after])
-                   -- If we're at the end of input, or there's something that isn't
-                   -- a dot, just return what we have so far.
-                   _ -> pure soFar
-        alphaNum x = isAlpha_ascii x || isDigit x
-        alphaNumOrDash x = alphaNum x || x == '-'
+  where 
+    hnp = 
+      do initChr <- satisfy alphaNum <?> "first character in shortname"
+         rest <- takeWhile alphaNumOrDash <?> "rest of chars in shortname"
+         let singleInit = B.singleton initChr
+         -- If there aren't any more characters, make sure the last character is
+         -- alphanumeric.
+         soFar <- 
+           if | B.null rest -> pure singleInit
+              | alphaNum (B.last rest) -> pure (mappend singleInit rest)
+              | otherwise -> 
+                  fail "Last character in shortname must be alphanumeric"
+         -- Look for a dot.
+         maybeDot <- peekChar
+         case maybeDot of
+           -- If there is a dot, return what we have so far, plus whatever's
+           -- next
+           Just '.' -> do char '.'
+                          after <- hnp
+                          return (mconcat [soFar,".",after])
+           -- If we're at the end of input, or there's something that isn't
+           -- a dot, just return what we have so far.
+           _ -> pure soFar
+    alphaNum x = isAlpha_ascii x || isDigit x
+    alphaNumOrDash x = alphaNum x || x == '-'
