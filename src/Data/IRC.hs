@@ -1,8 +1,3 @@
-{-# LANGUAGE CPP #-}
-{-# LANGUAGE MultiWayIf #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE Trustworthy #-}
-
 -- Copyright 2015 Peter Harpending
 -- 
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not

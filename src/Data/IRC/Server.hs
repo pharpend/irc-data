@@ -1,8 +1,3 @@
-{-# LANGUAGE CPP #-}
-{-# LANGUAGE MultiWayIf #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE Trustworthy #-}
-
 -- Copyright 2015 Peter Harpending
 -- 
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -37,6 +32,7 @@ module Data.IRC.Server
        )
        where
 
+import Control.Lens
 import Data.Attoparsec.ByteString.Char8
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Char8 as B
@@ -63,6 +59,7 @@ import Data.Monoid
 newtype Server = Server {unServer :: HostName}
   deriving Eq
 
+makeLense
 instance Ord Server where
   compare = comparing unServer
 
