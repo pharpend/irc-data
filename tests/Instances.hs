@@ -25,7 +25,15 @@ module Instances where
 
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Char8 as C
+import           Data.Char
 import           Test.QuickCheck
 
 instance Arbitrary ByteString where
   arbitrary = fmap C.pack arbitrary
+
+newtype WSpace = WSpace ByteString
+  deriving (Eq, Show)        
+
+instance Arbitrary WSpace where
+  arbitrary = 
+    fmap (WSpace . C.pack) $ listOf (suchThat arbitrary isSpace)

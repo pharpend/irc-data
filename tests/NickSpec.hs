@@ -24,7 +24,7 @@
 module NickSpec where
 
 import Data.IRC
-import Instances ()
+import Instances
 
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as B
@@ -42,6 +42,14 @@ spec =
        property $ 
        \(LongNick longNick) ->
          shouldSatisfy (parseNick longNick) isLeft
+     specify "valid nicks are valid" $
+       property $
+       \(ValidNick validNick) ->
+         shouldSatisfy (parseNick validNick) isRight
+     specify "whitespace is invalid" $
+       property $
+       \(WSpace sp) ->
+         shouldSatisfy (parseNick sp) isLeft
 
 newtype ValidNick = ValidNick ByteString
   deriving (Eq, Show)
