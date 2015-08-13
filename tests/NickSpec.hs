@@ -23,7 +23,39 @@
 
 module NickSpec where
 
+import Data.IRC
+import Instances ()
+
+import Data.ByteString (ByteString)
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Char8 as C
+import Data.Either
 import Test.Hspec
+import Test.QuickCheck
 
 spec :: Spec
-spec = return ()
+spec = context "Nick parsing" $ do
+  specify "empty nick is invalid" $ 
+    shouldSatisfy (parseNick "") isLeft
+  specify "nicks longer than 9 chars are invalid" $ 
+    property $ \(LongNick longNick) ->
+        shouldSatisfy (parseNick longNick) isLeft
+
+newtype ValidNick = ValidNick ByteString
+  deriving (Eq, Show)
+
+instance Arbitrary ValidNick where
+  arbitrary = do LongNick x <- arbitrary
+                 return $ ValidNick $ B.take 9 x
+
+newtype LongNick = LongNick ByteString
+  deriving (Eq, Show)
+
+instance Arbitrary LongNick where
+  arbitrary = suchThat arbitrary' (\(LongNick x) -> B.length x > 9)
+    where 
+      arbitrary' = do firstChar <- elements validInitialNickChars
+                      rest <- listOf $ elements validNonInitialNickChars
+                      return $ LongNick $ C.pack $ firstChar : rest
+
+
