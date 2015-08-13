@@ -25,7 +25,11 @@ module Data.IRC.Nick
   (Nick
   ,unNick
   ,parseNick
-  ,nickParser)
+  ,nickParser
+  ,isValidInitialNickChar
+  ,validInitialNickChars
+  ,isValidNonInitialNickChar
+  ,validNonInitialNickChars)
   where
   
 import Data.Attoparsec.ByteString
@@ -33,6 +37,9 @@ import Data.ByteString (ByteString)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as C
 import Data.Monoid
+import Data.Ord
+import Data.Word
+import Prelude hiding (takeWhile)
 
 -- |A newtype over 'ByteString'
 -- 
@@ -44,6 +51,12 @@ import Data.Monoid
 -- >                  ; "[", "]", "\", "`", "_", "^", "{", "|", "}"
 newtype Nick = Nick { unNick :: ByteString }
   deriving Eq
+  
+instance Ord Nick where
+  compare = comparing unNick  
+  
+instance Show Nick where
+  show = show . unNick  
 
 parseNick :: ByteString -> Either String Nick
 parseNick = parseOnly nickParser          
@@ -51,12 +64,21 @@ parseNick = parseOnly nickParser
 nickParser :: Parser Nick
 nickParser = fmap Nick nnp <?> "nick"
   where nnp =
-          do initChr <- satisfy letterSpecialChars
-             rest <- fmap B.pack $ many' $ satisfy letterSpecialCharsDigits
-             return $ B.cons initChr $ B.take 8 rest
-        letterSpecialChars x = B.elem x $ C.pack letterSpecialChars'
-        letterSpecialChars' = mconcat [['A' .. 'Z'],['a' .. 'z'],"[]\\`_^{|}"]
-        letterSpecialCharsDigits x =
-          B.elem x $ C.pack letterSpecialCharsDigits'
-        letterSpecialCharsDigits' =
-          mappend letterSpecialChars' $ mconcat [['0' .. '9'],"-"]
+          do initWord <- satisfy isValidInitialNickChar
+             rest <- takeWhile isValidNonInitialNickChar
+             if B.length rest > 8
+                then fail "Nick is longer than 9 characters"
+                else return $ B.cons initWord rest
+
+isValidInitialNickChar :: Word8 -> Bool
+isValidInitialNickChar x = B.elem x $ C.pack validInitialNickChars
+
+validInitialNickChars :: [Char]
+validInitialNickChars = mconcat [['A' .. 'Z'],['a' .. 'z'],"[]\\`_^{|}"]
+
+isValidNonInitialNickChar :: Word8 -> Bool
+isValidNonInitialNickChar x = B.elem x $ C.pack validNonInitialNickChars
+
+validNonInitialNickChars :: [Char]
+validNonInitialNickChars =
+  mappend validInitialNickChars $ mconcat [['0' .. '9'],"-"]
