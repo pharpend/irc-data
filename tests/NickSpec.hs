@@ -24,7 +24,7 @@
 module NickSpec where
 
 import Data.IRC
-import Instances
+import TestTypes
 
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as B

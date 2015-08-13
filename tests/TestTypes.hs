@@ -13,23 +13,28 @@
 -- limitations under the License.
 
 -- | 
--- Module      : Instances
--- Description : Arbitrary instances for the test suite
+-- Module      : TestTypes
+-- Description : Arbitrary instances and types for the test suite
 -- Copyright   : Copyright 2015 Peter Harpending
 -- License     : Apache-2.0
 -- Maintainer  : peter@harpending.org
 -- Stability   : experimental
 -- Portability : portable
 
-module Instances where
+module TestTypes where
 
 import           Data.ByteString (ByteString)
 import qualified Data.ByteString.Char8 as C
 import           Data.Char
+import           Data.Text (Text)
+import qualified Data.Text as T
 import           Test.QuickCheck
 
 instance Arbitrary ByteString where
   arbitrary = fmap C.pack arbitrary
+  
+instance Arbitrary Text where
+  arbitrary = fmap T.pack arbitrary         
 
 newtype WSpace = WSpace ByteString
   deriving (Eq, Show)        

@@ -24,7 +24,7 @@
 module ServerSpec where
 
 import           Data.IRC
-import           Instances ()
+import           TestTypes ()
 
 import           Control.Applicative
 import           Data.ByteString (ByteString)
