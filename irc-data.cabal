@@ -54,6 +54,7 @@ library
     , vector
   exposed-modules:
     Data.IRC
+    Data.IRC.Hostname
 
 test-suite tests
   hs-source-dirs:     spec
