@@ -50,7 +50,6 @@ library
       attoparsec
     , base >=4.7 && <4.9
     , bytestring
-    , lens
     , unordered-containers
     , vector
   exposed-modules:
@@ -61,8 +60,6 @@ library
     MultiWayIf
     OverloadedStrings
     Trustworthy
-  other-extensions:
-    TemplateHaskell
 
 test-suite tests
   hs-source-dirs:     spec

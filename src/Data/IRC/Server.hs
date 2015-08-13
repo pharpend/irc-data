@@ -32,7 +32,6 @@ module Data.IRC.Server
        )
        where
 
-import Control.Lens
 import Data.Attoparsec.ByteString.Char8
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Char8 as B
