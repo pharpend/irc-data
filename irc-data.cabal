@@ -45,7 +45,7 @@ library
      MultiWayIf
      OverloadedStrings                 
      Trustworthy                       
-  ghc-options:        -Wall
+  ghc-options:        -Wall -fno-warn-unused-do-bind
   build-depends:
       attoparsec
     , base >=4.7 && <4.9
