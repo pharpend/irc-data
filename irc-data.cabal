@@ -51,6 +51,7 @@ library
   default-language:   Haskell98
   exposed-modules:
     Data.IRC
+    Data.IRC.Channel
     Data.IRC.Nick
     Data.IRC.Server
     Data.IRC.Service
