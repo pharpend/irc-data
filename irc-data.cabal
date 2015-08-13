@@ -79,5 +79,6 @@ test-suite tests
   main-is:            Spec.hs
   other-modules:
     Instances
+    NickSpec
     ServerSpec
   type:               exitcode-stdio-1.0
