@@ -59,7 +59,6 @@ import Data.Monoid
 newtype Server = Server {unServer :: HostName}
   deriving Eq
 
-makeLense
 instance Ord Server where
   compare = comparing unServer
 
