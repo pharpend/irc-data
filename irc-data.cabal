@@ -38,29 +38,29 @@ source-repository this
   tag:      0.1.0.0
 
 library
-  hs-source-dirs:     src
-  default-language:   Haskell98
-  other-extensions:   
-     CPP                               
-     MultiWayIf
-     OverloadedStrings                 
-     Trustworthy                       
-  ghc-options:        -Wall -fno-warn-unused-do-bind
   build-depends:
       attoparsec
     , base >=4.7 && <4.9
     , bytestring
     , unordered-containers
     , vector
-  exposed-modules:
-    Data.IRC
-    Data.IRC.Nick
-    Data.IRC.Server
   default-extensions:
     CPP
     MultiWayIf
     OverloadedStrings
     Trustworthy
+  default-language:   Haskell98
+  exposed-modules:
+    Data.IRC
+    Data.IRC.Nick
+    Data.IRC.Server
+  hs-source-dirs:     src
+  ghc-options:        -Wall -fno-warn-unused-do-bind
+  other-extensions:   
+     CPP                               
+     MultiWayIf
+     OverloadedStrings                 
+     Trustworthy                       
 
 test-suite tests
   build-depends:
