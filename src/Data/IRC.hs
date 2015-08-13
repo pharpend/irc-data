@@ -57,4 +57,4 @@ module Data.IRC
   )
   where
 
-import Data.IRC.Hostname
+import Data.IRC.Server

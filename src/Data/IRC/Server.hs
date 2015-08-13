@@ -18,15 +18,15 @@
 -- the License.
 
 -- | 
--- Module      : Data.IRC.Hostname
--- Description : The parsers and stuff for hostnames
+-- Module      : Data.IRC.Server
+-- Description : The parsers and stuff for servers
 -- Copyright   : Copyright 2015 Peter Harpending
 -- License     : Apache-2.0
 -- Maintainer  : peter@harpending.org
 -- Stability   : experimental
 -- Portability : portable
 
-module Data.IRC.Hostname
+module Data.IRC.Server
        (Server
        ,unServer
        ,mkServer
