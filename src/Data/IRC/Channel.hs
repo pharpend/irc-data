@@ -32,5 +32,100 @@
 -- > separator by the protocol).  A colon (':') can also be used as a
 -- > delimiter for the channel mask.  Channel names are case insensitive.
 
-module Data.IRC.Channel where
+module Data.IRC.Channel 
+       ( Channel
+       , unChannel
+       , parseChannel
+       , channelParser
+       , chanString
+       , chanStringValidChars
+       ) where
+
+import           Control.Applicative
+import           Data.Attoparsec.ByteString
+import qualified Data.Attoparsec.ByteString.Char8 as A
+import           Data.ByteString (ByteString)
+import qualified Data.ByteString.Char8 as C
+import           Data.CaseInsensitive
+import           Data.Char (chr)
+import           Data.Monoid
+import           Data.Text (Text)
+import qualified Data.Text.Encoding as T
+import           Prelude hiding (take)
+
+-- |Quoth RFC 2812:
+-- 
+-- > channel    =  ( "#" / "+" / ( "!" channelid ) / "&" ) chanstring
+-- >               [ ":" chanstring ]
+-- > chanstring =  %x01-07 / %x08-09 / %x0B-0C / %x0E-1F / %x21-2B
+-- > chanstring =/ %x2D-39 / %x3B-FF
+-- >                  ; any octet except NUL, BELL, CR, LF, " ", "," and ":"
+-- > channelid  = 5( %x41-5A / digit )   ; 5( A-Z / 0-9 )
+-- 
+-- With regard to 
+-- 
+-- > chanstring =  %x01-07 / %x08-09 / %x0B-0C / %x0E-1F / %x21-2B
+-- 
+-- I think this is a typo, as ASCII 7 is excplicitly not allowed (see module
+-- description).
+-- 
+-- So, for the time being, this module doesn't allow ASCII 7.
+newtype Channel = Channel { unChannel :: CI Text }
+
+parseChannel :: ByteString -> Either String Channel
+parseChannel = parseOnly channelParser             
+
+channelParser :: Parser Channel
+channelParser = 
+  fmap (Channel . mk . T.decodeUtf8) cp 
+  <?> "channel name"
+  where 
+    cp = do initialBlock <- 
+              alt [ C.singleton <$> A.char '&'
+                  , C.singleton <$> A.char '#'
+                  , C.singleton <$> A.char '+'
+                  , do fst' <- A.char '!'
+                       rest <- take 5
+                       if C.any (not . 
+                                 (`elem` (mappend ['A'..'Z'] 
+                                                  ['0'..'9']))) 
+                                rest
+                          then fail (mappend "Invalid channel id: " 
+                                             (show rest))
+                          else return $ C.cons fst' rest
+                  ]
+            cs <- chanString
+            rest <- 
+              option mempty
+                     (do fst' <- A.char ':'
+                         rest <- chanString
+                         return $ C.cons fst' rest)
+            let finalChanName = mconcat [ initialBlock 
+                                        , cs
+                                        , rest
+                                        ]
+            if C.length finalChanName > 50
+              then fail "Channel name must be less than 50 chars long"
+              else return finalChanName
+    alt [] = empty
+    alt (x : xs) = x <|> alt xs
+
+-- |Note that this does not check length
+chanString :: Parser ByteString
+chanString = 
+  A.takeWhile1 (`elem` chanStringValidChars) <?> "chanstring"
+
+
+chanStringValidChars :: [Char]
+chanStringValidChars = 
+  fmap chr $
+  mconcat [ [0x01 .. 0x06] 
+          , [0x08 .. 0x09]
+          , [0x0B .. 0x0C]
+          , [0x0E .. 0x1F]
+          , [0x21 .. 0x2B]
+          , [0x2D .. 0x39]
+          , [0x3B .. 0xFF]
+          ]
+
 
